@@ -1,0 +1,197 @@
+<div class="container">
+<span class="badge badge-primary">Turn {{game.turn_num}}</span>
+<span class="badge badge-primary">Machine Owned at Start of Turn: 1</span>
+<span class="badge badge-primary" id="timer">Seconds Remaining: </span>
+<div class="card"><div class="card-body">
+<form method="POST" action="update/" id="decisions" name="decisions">
+  {% csrf_token %}
+  {% load app_filters %}
+  <input name="game_id" value="{{game.game_id}}"  hidden>
+  <input name="company_id" value="{{company.company_id}}" hidden>
+  <div class="row">
+    <div class="col-md-5">
+      <div class="form-group">
+        <label for="mp">Machines Purchased</label>
+        <input type="number" class="form-control" id="mp" name="mp" placeholder="* ${{company.mp_cost}}" value="0">
+      </div>
+      <div class="form-group">
+        <label for="mo">Machine Operated</label>
+        <input type="number" class="form-control" id="mo" name="mo" placeholder="* ${{company.mo_cost}}" value="0">
+      </div>
+      {% if game.game_mode != 'simple_production' %}
+      <div class="form-group">
+        <label for="r_d">Extra R&D Purchased</label>
+        <input type="number" class="form-control" id="r_d" name="r_d" placeholder="for cost" value="0">
+      </div>
+      {% endif %}
+    <button type="submit" class="btn btn-primary">Submit Decisions</button>
+  </div>
+  <div class="col-md-5">
+    <p class="text-justify">
+      Bank Balance: ${{ company.bank_balance }}<br>
+      MP Cost: ${{ company.mp_cost }}<br>
+      MO Cost: ${{ company.mo_cost }}<br>
+
+      {% if game.game_mode != 'simple_production' %}
+      R&D Cost: ${{ company.r_d_cost }}<br>
+      {% endif %}
+
+    </p>
+  </div>
+</div>
+  </form>
+  </div></div>
+  <span class="badge badge-primary">History:</span>
+  <div class="table-responsive">
+    <table id="history" class="table">
+    <thead>
+      <tr>
+        <th scope="col">This Company</th>
+        {% with ''|center:game.turn_num as range %}
+        {% for _ in range %}
+        <th scope="col">turn {{forloop.counter}}</th>
+        {% endfor %}
+        {% endwith %}
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th scope="row">Decisions:</th>
+        {% with ''|center:game.turn_num as range %}
+        {% for _ in range %}
+        <td></td>
+        {% endfor %}
+        {% endwith %}        
+      </tr>
+      <tr>
+        <td>Machine Purchased</td>
+        {% with ''|center:game.turn_num as range %}
+        {% for _ in range %}
+        <td>{{ record|get_machine_purchased:forloop.counter }}</td>
+        {% endfor %}
+        {% endwith %}  
+      </tr>
+      <tr>
+        <td>To Own</td>
+        {% with ''|center:game.turn_num as range %}
+        {% for _ in range %}
+        <td>{{ record|get_to_own:forloop.counter }}</td>
+        {% endfor %}
+        {% endwith %}
+      </tr>
+      <tr>
+        <td>Machine Operated</td>
+        {% with ''|center:game.turn_num as range %}
+        {% for _ in range %}
+        <td>{{ record|get_machine_operated:forloop.counter }}</td>
+        {% endfor %}
+        {% endwith %}
+      </tr>
+
+      {% if game.game_mode != 'simple_production' %}
+      <tr>
+        <td>Extra R&D Purchased</td>
+        {% with ''|center:game.turn_num as range %}
+        {% for _ in range %}
+        <td>{{ record|get_r_d_purchased:forloop.counter }}</td>
+        {% endfor %}
+        {% endwith %}
+      </tr>
+      {% endif %}
+
+      <tr>
+        <th scope="row">Bank Balance:</th>
+        {% with ''|center:game.turn_num as range %}
+        {% for _ in range %}
+        <td></td>
+        {% endfor %}
+        {% endwith %}
+      </tr>
+      <tr>
+        <td>Initial</td>
+        {% with ''|center:game.turn_num as range %}
+        {% for _ in range %}
+        <td>1</td>
+        {% endfor %}
+        {% endwith %}
+      </tr>
+      <tr>
+        <td>- MP cost</td>
+        {% with ''|center:game.turn_num as range %}
+        {% for _ in range %}
+        <td>{{ record|get_mp_cost:forloop.counter }}</td>
+        {% endfor %}
+        {% endwith %}
+      </tr>
+      <tr>
+        <td>- MO cost</td>
+        {% with ''|center:game.turn_num as range %}
+        {% for _ in range %}
+        <td>{{ record|get_mo_cost:forloop.counter }}</td>
+        {% endfor %}
+        {% endwith %}
+      </tr>
+
+      {% if game.game_mode != 'simple_production' %}
+      <tr>
+        <td>- R&D cost</td>
+        {% with ''|center:game.turn_num as range %}
+        {% for _ in range %}
+        <td>{{ record|get_r_d_cost:forloop.counter }}</td>
+        {% endfor %}
+        {% endwith %}
+      </tr>
+      {% endif %}
+
+      <tr>
+        <td>Before revenues</td>
+        {% with ''|center:game.turn_num as range %}
+        {% for _ in range %}
+        <td>1</td>
+        {% endfor %}
+        {% endwith %}
+      </tr>
+      <tr>
+        <td>+ Revenues</td>
+        {% with ''|center:game.turn_num as range %}
+        {% for _ in range %}
+        <td>{{ record|get_revenue:forloop.counter }}</td>
+        {% endfor %}
+        {% endwith %}
+      </tr>
+      <tr>
+        <td>After revenues</td>
+        {% with ''|center:game.turn_num as range %}
+        {% for _ in range %}
+        <td>1</td>
+        {% endfor %}
+        {% endwith %}
+      </tr>
+      <tr>
+        <th scope="row">Production:</th>
+        {% with ''|center:game.turn_num as range %}
+        {% for _ in range %}
+        <td></td>
+        {% endfor %}
+        {% endwith %}
+      </tr>
+      <tr>
+        <td>Units produced</td>
+        {% with ''|center:game.turn_num as range %}
+        {% for _ in range %}
+        <td>{{ record|get_unit_produce:forloop.counter }}</td>
+        {% endfor %}
+        {% endwith %}
+      </tr>
+      <tr>
+        <td>Cost per turn</td>
+        {% with ''|center:game.turn_num as range %}
+        {% for _ in range %}
+        <td>{{ record|get_cost_per_turn:forloop.counter }}</td>
+        {% endfor %}
+        {% endwith %}
+      </tr>
+    </tbody>
+  </table>
+</div>
+</div>

@@ -1,0 +1,16 @@
+<nav>
+    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+      <a class="nav-item nav-link active" id="nav-output-tab" data-toggle="tab" href="#nav-output" role="tab" aria-controls="nav-home" aria-selected="true">Output</a>
+      <a class="nav-item nav-link" id="nav-price-tab" data-toggle="tab" href="#nav-price" role="tab" aria-controls="nav-price" aria-selected="false">Price</a>
+      <a class="nav-item nav-link" id="nav-concentration-tab" data-toggle="tab" href="#nav-concentration" role="tab" aria-controls="nav-concentration" aria-selected="false">Concentration</a>
+      <a class="nav-item nav-link" id="nav-balance-tab" data-toggle="tab" href="#nav-balance" role="tab" aria-controls="nav-balance" aria-selected="false">Bank Balance</a>
+      <a class="nav-item nav-link" id="nav-detail-tab" data-toggle="tab" href="#nav-detail" role="tab" aria-controls="nav-detail" aria-selected="false">Detailed Data</a>
+    </div>
+  </nav>
+  <div class="tab-content" id="nav-tabContent">
+    <div class="tab-pane fade show active" id="nav-output" role="tabpanel" aria-labelledby="nav-output-tab">{% include "game/report_output.html" %}</div>
+    <div class="tab-pane fade" id="nav-price" role="tabpanel" aria-labelledby="nav-price-tab">...</div>
+    <div class="tab-pane fade" id="nav-concentration" role="tabpanel" aria-labelledby="nav-concentration-tab">...</div>
+    <div class="tab-pane fade" id="nav-balance" role="tabpanel" aria-labelledby="nav-balance-tab">...</div>
+    <div class="tab-pane fade" id="nav-detail" role="tabpanel" aria-labelledby="nav-detail-tab">...</div>
+  </div>

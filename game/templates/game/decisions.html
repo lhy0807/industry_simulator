@@ -111,7 +111,7 @@
         <td>Initial</td>
         {% with ''|center:game.turn_num as range %}
         {% for _ in range %}
-        <td>1</td>
+        <td>{{ record|get_initial:forloop.counter }}</td>
         {% endfor %}
         {% endwith %}
       </tr>
@@ -147,7 +147,7 @@
         <td>Before revenues</td>
         {% with ''|center:game.turn_num as range %}
         {% for _ in range %}
-        <td>1</td>
+        <td>{{ record|get_before_revenue:forloop.counter }}</td>
         {% endfor %}
         {% endwith %}
       </tr>
@@ -163,7 +163,7 @@
         <td>After revenues</td>
         {% with ''|center:game.turn_num as range %}
         {% for _ in range %}
-        <td>1</td>
+        <td>{{ record|get_bank_balance:forloop.counter }}</td>
         {% endfor %}
         {% endwith %}
       </tr>

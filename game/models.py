@@ -39,6 +39,8 @@ class Game(models.Model):
     turn_num = models.IntegerField(default=1)
     counter_time = models.DateTimeField("Time Submitted", default=datetime.datetime.now())
 
+    creator = models.ForeignKey('Company', on_delete=models.DO_NOTHING, related_name='+', default=None, null=True, blank=True)
+
 class Company(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
     company_id = models.IntegerField(default=randint(100000000,999999999))

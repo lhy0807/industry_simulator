@@ -37,12 +37,20 @@ def create_group(request, game_id, company_id):
     Company = apps.get_model('game','Company')
     try:
         game = Game.objects.get(pk=game_id, player_or_bot='player')
-        company = Company.objects.get(game=game, company_id=company_id)
     except Exception:
         game = Game(pk=game_id, player_or_bot='player')
         game.save()
+
+    try:
+        company = Company.objects.get(game=game,company_id=company_id)
+    except Exception:
         company = Company(game=game,company_id=company_id)
         company.save()
+
+        #First one creates a game is creator
+        if game.creator is None:
+            game.creator = company
+            game.save()
     
     company_list = Company.objects.filter(game=game)
 

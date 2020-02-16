@@ -1,3 +1,4 @@
+{% load app_filters %}
 <div class="container">
     <div class="row">
         <div class="col-md-3">
@@ -9,18 +10,14 @@
                   </tr>
                 </thead>
                 <tbody>
+                  {% with ''|center:game.turn_num as range %}
+                  {% for _ in range %}
                   <tr>
-                    <td>1</td>
-                    <td>1</td>
+                    <td>{{forloop.counter}}</td>
+                    <td>{{ record|get_report_output:forloop.counter }}</td>
                   </tr>
-                  <tr>
-                    <td>2</td>
-                    <td>2</td>
-                  </tr>
-                  <tr>
-                    <td>3</td>
-                    <td>3</td>
-                  </tr>
+                  {% endfor %}
+                  {% endwith %}
                 </tbody>
               </table>
         </div>
@@ -29,20 +26,27 @@
     </div>
 </div>
 <script>
-    var trace1 = {
-      x: [1, 2, 3, 4],
-      y: [10, 15, 13, 17],
-      type: 'scatter'
-    };
-    
-    var trace2 = {
-      x: [1, 2, 3, 4],
-      y: [16, 5, 11, 9],
-      type: 'scatter'
-    };
-    
-    var data = [trace1, trace2];
-    
-    Plotly.newPlot('report_output', data);
-    
-    </script>
+  
+  var x = []
+  var y = []
+
+  "{% with ''|center:game.turn_num as range %}"
+  "{% for _ in range %}"
+  x.push("{{forloop.counter}}")
+  y.push("{{ record|get_report_output:forloop.counter }}")
+
+  "{% endfor %}"
+  "{% endwith %}"
+
+  var trace1 = {
+    x: x,
+    y: y,
+    type: 'scatter'
+  };
+  
+  
+  var data = [trace1];
+  
+  Plotly.newPlot('report_output', data);
+  
+  </script>

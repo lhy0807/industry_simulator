@@ -35,6 +35,7 @@ def create_robot(request):
 def create_group(request, game_id, company_id):
     Game = apps.get_model('game','Game')
     Company = apps.get_model('game','Company')
+    is_creator = False
     try:
         game = Game.objects.get(pk=game_id, player_or_bot='player')
     except Exception:
@@ -51,10 +52,34 @@ def create_group(request, game_id, company_id):
         if game.creator is None:
             game.creator = company
             game.save()
+            is_creator = True
+
+    if game.creator == company:
+        is_creator = True
     
     company_list = Company.objects.filter(game=game)
 
-    return render(request, 'startscreen/create_group.html', {'game':game, 'company':company,'company_list':company_list})
+    return render(request, 'startscreen/create_group.html', {'game':game, 'company':company,'company_list':company_list,'is_creator':is_creator})
 
-def join_group(request):
-    return HttpResponse("Join Group Page")
+def join_group(request, game_id, company_id):
+    Game = apps.get_model('game','Game')
+    Company = apps.get_model('game','Company')
+    game = Game.objects.get(pk=game_id, player_or_bot='player')
+    try:
+        company = Company.objects.get(game=game,company_id=company_id)
+    except Exception:
+        company = Company(game=game,company_id=company_id)
+        company.save()
+    company_list = Company.objects.filter(game=game)
+
+    '''
+    Detect is a game is joinable
+    Using a naive method which is detect whether is time per turn
+    is still 0
+    TODO: Can be subsituted by a more robust detection in the future
+    '''
+    joinable = False
+    if game.max_seconds_per_turn != 0:
+        joinable = True
+
+    return render(request, 'startscreen/join_group.html', {'game':game, 'company':company,'company_list':company_list,'joinable':joinable})

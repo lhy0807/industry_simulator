@@ -55,3 +55,11 @@ def get_get_initial(record, turn):
 @register.filter(name='get_before_revenue')
 def get_before_revenue(record, turn):
     return record.get(turn=turn).bank_balance - record.get(turn=turn).revenue
+
+@register.filter(name='get_report_output')
+def get_report_output(record, turn):
+    output = 0
+    Record = apps.get_model('game','Record')
+    for company in Record.objects.filter(game=record.get(turn=turn).game, turn=turn):
+        output += company.unit_produce
+    return output

@@ -57,7 +57,7 @@ class Company(models.Model):
     mo_cost = models.IntegerField(default=0)
     r_d_cost = models.IntegerField(default=0)
     revenue = models.IntegerField(default=0)
-    unit_produce = models.IntegerField(default=0)
+    unit_produce = models.FloatField(default=0)
     cost_per_turn = models.IntegerField(default=0)
 
 class Record(models.Model):
@@ -79,5 +79,5 @@ class Record(models.Model):
     mo_cost = models.IntegerField(default=0)
     r_d_cost = models.IntegerField(default=0)
     revenue = models.IntegerField(default=0)
-    unit_produce = models.IntegerField(default=0)
+    unit_produce = models.FloatField(default=0)
     cost_per_turn = models.IntegerField(default=0)

@@ -30,11 +30,16 @@ def save_to_record(game, company, turn=1):
     record.cost_per_turn = company.cost_per_turn
     record.save()
 
+def r_d_draw_to_cost(draw):
+    #TODO: use a naivce calculation for cost
+    return draw**2*1000
+
 def create(request):
     '''
         Initialize Game model
     '''
     try:
+        #For group game
         #from create_group
         game_id = request.POST['game_id']
         company_id = request.POST['company_id']
@@ -48,7 +53,7 @@ def create(request):
         try:
             Game.objects.get(pk=game_id)
             #regenerate another ID
-            game_id = randint(1000000000, 9999999999)
+            game_id = randint(10000, 99999)
         except Game.DoesNotExist:
             next
         game = Game(pk=game_id, player_or_bot='bot')
@@ -56,6 +61,7 @@ def create(request):
         '''
         Initialize Company Model
         '''
+        #For robot game
         #hard_coded id. need to be changed
         company_id = 100000000
         company = Company(game=game,company_id=company_id)
@@ -121,18 +127,33 @@ def update(request, game_id, company_id):
 
         mp = int(request.POST['mp'])
         mo = int(request.POST['mo'])
+
+        #calculate R&D
         if game_mode != 'simple_production':
-            r_d = request.POST['r_d']
+            r_d = int(request.POST['r_d'])
+            company.r_d_purchased += r_d
+            company.r_d_cost = r_d_draw_to_cost(r_d)
+
+        #reduce cost if in cost_reduce mode
+        if game_mode == 'cost_reduce':
+            #TODO: improve cost reduction method
+            company.mo_cost *= (1-0.04)**company.r_d_purchased
         
         #update company
         company.machine_purchased = mp
         company.to_own += mp
         company.machine_operated = mo
 
-        #game_mode == 'simple_production'
-        company.unit_produce = mo
-        company.cost_per_turn = mp*company.mp_cost + mo*company.mo_cost
-        #TODO:game_mode == others
+        #game_mode == 'simple_production' or 'cost_reduce'
+        if game_mode == 'simple_production' or game_mode == 'cost_reduce':
+            company.unit_produce = mo
+        
+        #game_mode == 'output_expand'
+        #increase produced unit if in output_expand mode
+        if game_mode == 'output_expand':
+            company.unit_produce = mo * (1+0.04)**company.r_d_purchased
+
+        company.cost_per_turn = mp*company.mp_cost + mo*company.mo_cost + company.r_d_cost
 
         company.bank_balance -= company.cost_per_turn
         

@@ -20,8 +20,52 @@
       </div>
       {% if game.game_mode != 'simple_production' %}
       <div class="form-group">
-        <label for="r_d">Extra R&D Purchased</label>
+        <label for="r_d" data-toggle="modal" data-target="#cost-table">Extra R&D Purchased</label>
         <input type="number" class="form-control" id="r_d" name="r_d" placeholder="for cost" value="0">
+      </div>
+      <!-- Cost Table -->
+      <div class="modal fade" id="cost-table" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLongTitle">R&D Cost</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col"># of Draws</th>
+                    <th scope="col">Cost</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">1</th>
+                    <td>1000</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">2</th>
+                    <td>4000</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">3</th>
+                    <td>9000</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">4</th>
+                    <td>16000</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
       </div>
       {% endif %}
     <button type="submit" class="btn btn-primary">Submit Decisions</button>

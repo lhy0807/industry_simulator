@@ -13,7 +13,13 @@ def index(request, game_id, company_id):
     record = Record.objects.filter(game=game,company=company)
     request.session['game']=game_id
     request.session['company']=company_id
-    return render(request, 'game/index.html', {'game':game,'company':company,'record':record})
+    error = ''
+    try:
+        error = request.session['error']
+        request.session['error'] = ''
+    except(Exception):
+        next
+    return render(request, 'game/index.html', {'game':game,'company':company,'record':record,'error':error})
 
 def save_to_record(game, company, turn=1):
     record = Record(game=game, turn=turn, company=company)
@@ -110,6 +116,12 @@ def create(request):
     return HttpResponseRedirect(reverse('game:index', args=(game_id,company_id)))
 
 def update(request, game_id, company_id):
+    '''
+    Idea:
+    Assign values to temporary variables
+    Apply Detection Mechanism
+    Change values of company according to temp variables
+    '''
     try:
         
         game_id = game_id
@@ -127,33 +139,56 @@ def update(request, game_id, company_id):
 
         mp = int(request.POST['mp'])
         mo = int(request.POST['mo'])
+        tmp_mo_cost = company.mo_cost
+        tmp_mp_cost = company.mp_cost
+        tmp_r_d_cost = company.r_d_cost
+        tmp_r_d_purchased = company.r_d_purchased
 
         #calculate R&D
         if game_mode != 'simple_production':
             r_d = int(request.POST['r_d'])
-            company.r_d_purchased += r_d
-            company.r_d_cost = r_d_draw_to_cost(r_d)
+            tmp_r_d_purchased = company.r_d_purchased + r_d
+            tmp_r_d_cost = r_d_draw_to_cost(r_d)
 
         #reduce cost if in cost_reduce mode
         if game_mode == 'cost_reduce':
             #TODO: improve cost reduction method
-            company.mo_cost *= (1-0.04)**company.r_d_purchased
-        
-        #update company
-        company.machine_purchased = mp
-        company.to_own += mp
-        company.machine_operated = mo
+            tmp_mo_cost = tmp_mo_cost * (1-0.04)**tmp_r_d_purchased
 
         #game_mode == 'simple_production' or 'cost_reduce'
         if game_mode == 'simple_production' or game_mode == 'cost_reduce':
-            company.unit_produce = mo
+            tmp_unit_produce = mo
         
         #game_mode == 'output_expand'
         #increase produced unit if in output_expand mode
         if game_mode == 'output_expand':
-            company.unit_produce = mo * (1+0.04)**company.r_d_purchased
+            tmp_unit_produce = mo * (1+0.04)**tmp_r_d_purchased
 
-        company.cost_per_turn = mp*company.mp_cost + mo*company.mo_cost + company.r_d_cost
+        tmp_cost_per_turn = mp*tmp_mp_cost + mo*tmp_mo_cost + tmp_r_d_cost
+
+        #apply detection mechanism
+        #1. If machine operated larger than to_own
+        if mo > company.to_own + mp:
+            error = 'Machine Operated larger than Machine Owned'
+            request.session['error'] = error
+            return HttpResponseRedirect(reverse('game:index', args=(game_id,company_id)))
+        #2. If cost_per_turn larger than bank balance
+        if tmp_cost_per_turn > company.bank_balance:
+            error = 'Cost Per Turn Larger than Bank Balance'
+            request.session['error'] = error
+            return HttpResponseRedirect(reverse('game:index', args=(game_id,company_id)))
+
+        #update company
+        company.machine_purchased = mp
+        company.to_own += mp
+        company.machine_operated = mo
+        company.r_d_purchased = tmp_r_d_purchased
+        company.r_d_cost = tmp_r_d_cost
+        company.mo_cost = tmp_mo_cost
+        company.unit_produce = tmp_unit_produce
+        company.cost_per_turn = tmp_cost_per_turn
+
+
 
         company.bank_balance -= company.cost_per_turn
         

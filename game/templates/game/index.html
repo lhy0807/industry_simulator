@@ -25,6 +25,13 @@
     document.getElementById("timer").innerHTML = "Seconds Remaining: " + time_limit;
   }
   function page_onload(){
+    try{
+      var error_message = "{{error}}";
+      if (error_message != ""){
+        alert(error_message);
+      }
+    }
+    catch(err){}
     var time_limit = "{{game.max_seconds_per_turn}}";
     update_timer(time_limit)
     setTimeout(autosubmit, time_limit*1000);

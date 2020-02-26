@@ -1,57 +1,87 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
-    <meta name="generator" content="Jekyll v3.8.6">
-    <title>Cover Template · Bootstrap</title>
 
-    <link rel="canonical" href="https://getbootstrap.com/docs/4.4/examples/cover/">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
-    <!-- Bootstrap core CSS -->
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+  <meta name="generator" content="Jekyll v3.8.6">
+  <title>Cover Template · Bootstrap</title>
+
+  <link rel="canonical" href="https://getbootstrap.com/docs/4.4/examples/cover/">
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
   <style>
-  html, body {
-    margin: 0;
-    height: 100%;
-}
-</style>
+    html,
+    body {
+      margin: 0;
+      height: 100%;
+    }
+  </style>
+  <script>
+    function refresh_list(data) {
+      var company_list = "";
+      for (var i = 0; i < data.length; i++) {
+        var company = "<li class=\"list-group-item\">" + (i + 1) + ". " + data[i]['fields']['company_name'] +
+          " Has Joined The Game</li>"
+        company_list += company;
+      }
+      document.getElementById("company_list").innerHTML = company_list;
+    }
+    var myVar = setInterval(function () {
+      $.ajax({
+        synch: 'true',
+        type: 'GET',
+        url: "{% url 'startscreen:company_list' game.game_id  %}",
+        success: function (data) {
+          refresh_list(data);
+        }
+      }); //End Ajax
+    }, 1000);
+  </script>
 </head>
-<body>
-    <div class="container h-100">
-      <div class="row h-75">
-            <div class="col-md-1"></div>
-            <div class="col-md-10 my-auto">
-                <div class="card " >
-                    <div class="card-body">
-                      <h4 class="card-title text-center">Create Group ID: {{game.game_id}}</h4>
-                      <h5 class="card-title text-center">Your Company's ID: {{company.company_id}}</h5>
-                      <form action="{% url 'game:create' %}" method="POST">
-                      {% csrf_token %}
-                      <input name="game_id" value="{{game.game_id}}" hidden>
-                      <input name="company_id" value="{{company.company_id}}" hidden>
-                      {% if joinable == True %}
-                      <button type="submit" class="btn btn-primary mt-3">Join</button>
-                      {% endif %}  
-                      <a class="btn btn-success mt-3" id="refresh" href="" role="button">Refresh</a>
-                        <a href="{% url 'index:index' %}" class="btn btn-secondary mt-3 float-right" role="button" aria-pressed="true">Back</a>
-                      </form>
-                    <ul class="list-group mt-3">
-                        {% for company in company_list%}
-                        <li class="list-group-item">{{ forloop.counter }}. Company {{company.company_id}} Has Joined The Game</li>
-                        {% endfor %}
-                    </ul>
-                    </div>
-                  </div>
-            </div>
-          </div>
 
+<body>
+  <div class="container h-100">
+    <div class="row h-75">
+      <div class="col-md-1"></div>
+      <div class="col-md-10 my-auto">
+        <div class="card ">
+          <div class="card-body">
+            <h4 class="card-title text-center">Create Group ID: {{game.game_id}}</h4>
+            <h5 class="card-title text-center">Your Company's ID: {{company.company_id}}</h5>
+            <form action="{% url 'game:create' %}" method="POST">
+              {% csrf_token %}
+              <input name="game_id" value="{{game.game_id}}" hidden>
+              <input name="company_id" value="{{company.company_id}}" hidden>
+              {% if joinable == True %}
+              <button type="submit" class="btn btn-primary mt-3">Join</button>
+              {% endif %}
+              <a class="btn btn-success mt-3" id="refresh" href="" role="button">Refresh</a>
+              <a href="{% url 'index:index' %}" class="btn btn-secondary mt-3 float-right" role="button"
+                aria-pressed="true">Back</a>
+            </form>
+            <ul class="list-group mt-3" id="company_list">
+
+            </ul>
+          </div>
+        </div>
+      </div>
     </div>
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-</bodyonload="page_onload()">
+
+  </div>
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+    integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
+  </script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+  </script> <!-- Bootstrap core CSS -->
+  </bodyonload="page_onload()">
+
 </html>

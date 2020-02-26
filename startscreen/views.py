@@ -1,7 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from random import randint
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from django.apps import apps
+from django.core import serializers
+from django.utils import timezone
 
 
 def index(request):
@@ -32,6 +34,14 @@ def create_robot(request):
         
     return render(request, 'startscreen/create_robot.html', {'has_previous_game':has_previous_game})
 
+def company_list(request, game_id):
+    Game = apps.get_model('game','Game')
+    Company = apps.get_model('game','Company')
+    game = Game.objects.get(pk=game_id)
+    company_list = list(Company.objects.filter(game=game))
+
+    return HttpResponse(serializers.serialize('json', company_list),content_type='application/json')
+
 def create_group(request, game_id, company_id):
     Game = apps.get_model('game','Game')
     Company = apps.get_model('game','Company')
@@ -45,7 +55,12 @@ def create_group(request, game_id, company_id):
     try:
         company = Company.objects.get(game=game,company_id=company_id)
     except Exception:
-        company = Company(game=game,company_id=company_id)
+
+        #Prevent game joiners using create_group route joining
+        if game.company_num() == 1:
+            return HttpResponse('Illegal Access.')
+
+        company = Company(game=game,company_id=company_id, company_name='Creator')
         company.save()
 
         #First one creates a game is creator
@@ -58,18 +73,26 @@ def create_group(request, game_id, company_id):
         is_creator = True
     
     company_list = Company.objects.filter(game=game)
-
     return render(request, 'startscreen/create_group.html', {'game':game, 'company':company,'company_list':company_list,'is_creator':is_creator})
 
 def join_group(request, game_id, company_id):
     Game = apps.get_model('game','Game')
     Company = apps.get_model('game','Company')
-    game = Game.objects.get(pk=game_id, player_or_bot='player')
+
+    # prevent entering a game that doesn't exist
+    try:
+        game = Game.objects.get(pk=game_id, player_or_bot='player')
+    except Exception:
+        raise Http404("Game does not exist.")
+
     try:
         company = Company.objects.get(game=game,company_id=company_id)
     except Exception:
-        company = Company(game=game,company_id=company_id)
+        # get company name only if company was not created
+        company_name = request.POST['company_name']
+        company = Company(game=game,company_id=company_id, company_name = company_name)
         company.save()
+
     company_list = Company.objects.filter(game=game)
 
     '''

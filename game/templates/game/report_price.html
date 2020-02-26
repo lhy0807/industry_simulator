@@ -1,0 +1,50 @@
+{% load app_filters %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-3">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Turn</th>
+            <th scope="col">Price Per Unit Produced</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% with ''|center:game.turn_num as range %} {% for _ in range %}
+          <tr>
+            <td>{{forloop.counter}}</td>
+            <td>{{ record|get_report_price:forloop.counter }}</td>
+          </tr>
+          {% endfor %} {% endwith %}
+        </tbody>
+      </table>
+    </div>
+    <div class="col-md-7">
+      <div id="report_price"></div>
+    </div>
+  </div>
+</div>
+<script>
+  {
+    let price_x = [];
+    let price_y = [];
+
+    ("{% with ''|center:game.turn_num as range %}");
+    ("{% for _ in range %}");
+    price_x.push("{{forloop.counter}}");
+    price_y.push("{{ record|get_report_price:forloop.counter }}");
+
+    ("{% endfor %}");
+    ("{% endwith %}");
+
+    let price_trace1 = {
+      x: price_x,
+      y: price_y,
+      type: "scatter"
+    };
+
+    let price_data = [price_trace1];
+
+    Plotly.newPlot("report_price", price_data);
+  }
+</script>

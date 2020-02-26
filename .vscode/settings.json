@@ -1,0 +1,9 @@
+{
+    "python.pythonPath": "D:\\Anaconda3\\python.exe",
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "[django-html]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "files.autoSave": "afterDelay",
+    "editor.formatOnSave": true
+}

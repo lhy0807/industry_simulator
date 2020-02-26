@@ -63,3 +63,14 @@ def get_report_output(record, turn):
     for company in Record.objects.filter(game=record.get(turn=turn).game, turn=turn):
         output += company.unit_produce
     return output
+
+@register.filter(name='get_report_price')
+def get_report_price(record, turn):
+    return record.get(turn=turn).revenue / record.get(turn=turn).unit_produce
+
+@register.filter(name='get_demand_func')
+def get_demand_func(game, Q):
+    Q = int(Q)
+    game = game
+    K = game.price_output_equal_player / (game.company_num()**(-1/game.demand_elasticity))
+    return K * Q**(-1/game.demand_elasticity) * game.price_growth_multiplier**game.turn_num

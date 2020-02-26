@@ -1,241 +1,251 @@
 <div class="container">
-<span class="badge badge-primary">Turn {{game.turn_num}}</span>
-<span class="badge badge-primary">Machine Owned at Start of Turn: 1</span>
-<span class="badge badge-primary" id="timer">Seconds Remaining: </span>
-<div class="card"><div class="card-body">
-<form method="POST" action="update/" id="decisions" name="decisions">
-  {% csrf_token %}
-  {% load app_filters %}
-  <input name="game_id" value="{{game.game_id}}"  hidden>
-  <input name="company_id" value="{{company.company_id}}" hidden>
-  <div class="row">
-    <div class="col-md-5">
-      <div class="form-group">
-        <label for="mp">Machines Purchased</label>
-        <input type="number" class="form-control" id="mp" name="mp" placeholder="* ${{company.mp_cost}}" value="0">
-      </div>
-      <div class="form-group">
-        <label for="mo">Machine Operated</label>
-        <input type="number" class="form-control" id="mo" name="mo" placeholder="* ${{company.mo_cost}}" value="0">
-      </div>
-      {% if game.game_mode != 'simple_production' %}
-      <div class="form-group">
-        <label for="r_d" data-toggle="modal" data-target="#cost-table">Extra R&D Purchased</label>
-        <input type="number" class="form-control" id="r_d" name="r_d" placeholder="for cost" value="0">
-      </div>
-      <!-- Cost Table -->
-      <div class="modal fade" id="cost-table" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLongTitle">R&D Cost</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
+  <span class="badge badge-primary">Turn {{game.turn_num}}</span>
+  <span class="badge badge-primary">Machine Owned at Start of Turn: {{company.to_own}}</span>
+  <span class="badge badge-primary" id="timer">Seconds Remaining: </span>
+  <div class="card mb-3 mt-1">
+    <div class="card-body">
+      <form method="POST" action="update/" id="decisions" name="decisions">
+        {% csrf_token %} {% load app_filters %}
+        <input name="game_id" value="{{game.game_id}}" hidden />
+        <input name="company_id" value="{{company.company_id}}" hidden />
+        <div class="row">
+          <div class="col-md-5">
+            <script>
+              function change_total_cost() {
+                let sum = document.getElementById('mp').value * "{{company.mp_cost}}" +
+                  document.getElementById('mo').value * "{{company.mo_cost}}";
+                try {
+                  sum += Math.pow(document.getElementById('r_d').value, 2) * 1000;
+                } catch (error) {
+
+                }
+                document.getElementById('total-cost').innerText = "Total Cost: $" + sum;
+              }
+
+              function change_mp() {
+                document.getElementById('mp-cost-disp').innerText = "MP Cost: $" + document.getElementById('mp')
+                  .value *
+                  "{{company.mp_cost}}";
+                change_total_cost()
+              }
+
+              function change_mo() {
+                document.getElementById('mo-cost-disp').innerText = "MO Cost: $" + document.getElementById('mo')
+                  .value *
+                  "{{company.mo_cost}}";
+                change_total_cost()
+              }
+
+              function change_rd() {
+                document.getElementById('rd-cost-disp').innerText = "R&D Cost: $" + Math.pow(document.getElementById(
+                  'r_d').value, 2) * 1000;
+                change_total_cost()
+              }
+            </script>
+            <div class="form-group">
+              <label for="mp">Machines Purchased</label>
+              <input type="number" class="form-control" id="mp" name="mp" placeholder="* ${{company.mp_cost}}" value="0"
+                oninput="change_mp()" />
             </div>
-            <div class="modal-body">
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th scope="col"># of Draws</th>
-                    <th scope="col">Cost</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <th scope="row">1</th>
-                    <td>1000</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">2</th>
-                    <td>4000</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">3</th>
-                    <td>9000</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">4</th>
-                    <td>16000</td>
-                  </tr>
-                </tbody>
-              </table>
+            <div class="form-group">
+              <label for="mo">Machine Operated</label>
+              <input type="number" class="form-control" id="mo" name="mo" placeholder="* ${{company.mo_cost}}" value="0"
+                oninput="change_mo()" />
             </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            {% if game.game_mode != 'simple_production' %}
+            <div class="form-group">
+              <label for="r_d" data-toggle="modal" data-target="#cost-table">Extra R&D Purchased</label>
+              <input type="number" class="form-control" id="r_d" name="r_d" placeholder="for cost" value="0"
+                oninput="change_rd()" />
             </div>
+            <!-- Cost Table -->
+            <div class="modal fade" id="cost-table" tabindex="-1" role="dialog"
+              aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">
+                      R&D Cost
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th scope="col"># of R&D Projects</th>
+                          <th scope="col">Cost</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <th scope="row">1</th>
+                          <td>1000</td>
+                        </tr>
+                        <tr>
+                          <th scope="row">2</th>
+                          <td>4000</td>
+                        </tr>
+                        <tr>
+                          <th scope="row">3</th>
+                          <td>9000</td>
+                        </tr>
+                        <tr>
+                          <th scope="row">4</th>
+                          <td>16000</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                      Close
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% endif %}
+            <button type="submit" class="btn btn-primary">
+              Submit Decisions
+            </button>
+          </div>
+          <div class="col-md-5">
+            <p class="text-justify mb-0">
+              Bank Balance: ${{ company.bank_balance }}<br />
+              MP Unit Cost: ${{ company.mp_cost }}<br />
+              MO Unit Cost: ${{ company.mo_cost }}<br />
+            </p>
+            <p id="mp-cost-disp" class="text-justify mb-0">MP Cost: $0<br /></p>
+            <p id="mo-cost-disp" class="text-justify mb-0">MO Cost: $0<br /></p>
+            {% if game.game_mode != 'simple_production' %}
+            <p id="rd-cost-disp" class="text-justify mb-0">R&D Cost: $0<br /></p>
+            {% endif %}
+            <p id="total-cost" class="text-justify mb-0">Total Cost: $0<br /></p>
           </div>
         </div>
-      </div>
-      {% endif %}
-    <button type="submit" class="btn btn-primary">Submit Decisions</button>
+      </form>
+    </div>
   </div>
-  <div class="col-md-5">
-    <p class="text-justify">
-      Bank Balance: ${{ company.bank_balance }}<br>
-      MP Cost: ${{ company.mp_cost }}<br>
-      MO Cost: ${{ company.mo_cost }}<br>
-
-      {% if game.game_mode != 'simple_production' %}
-      R&D Cost: ${{ company.r_d_cost }}<br>
-      {% endif %}
-
-    </p>
-  </div>
-</div>
-  </form>
-  </div></div>
-  <span class="badge badge-primary">History:</span>
+  <h2 class="mb-3">History:</h2>
   <div class="table-responsive">
     <table id="history" class="table">
-    <thead>
-      <tr>
-        <th scope="col">This Company</th>
-        {% with ''|center:game.turn_num as range %}
-        {% for _ in range %}
-        <th scope="col">turn {{forloop.counter}}</th>
-        {% endfor %}
-        {% endwith %}
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <th scope="row">Decisions:</th>
-        {% with ''|center:game.turn_num as range %}
-        {% for _ in range %}
-        <td></td>
-        {% endfor %}
-        {% endwith %}        
-      </tr>
-      <tr>
-        <td>Machine Purchased</td>
-        {% with ''|center:game.turn_num as range %}
-        {% for _ in range %}
-        <td>{{ record|get_machine_purchased:forloop.counter }}</td>
-        {% endfor %}
-        {% endwith %}  
-      </tr>
-      <tr>
-        <td>To Own</td>
-        {% with ''|center:game.turn_num as range %}
-        {% for _ in range %}
-        <td>{{ record|get_to_own:forloop.counter }}</td>
-        {% endfor %}
-        {% endwith %}
-      </tr>
-      <tr>
-        <td>Machine Operated</td>
-        {% with ''|center:game.turn_num as range %}
-        {% for _ in range %}
-        <td>{{ record|get_machine_operated:forloop.counter }}</td>
-        {% endfor %}
-        {% endwith %}
-      </tr>
+      <thead>
+        <tr>
+          <th scope="col">This Company</th>
+          {% with ''|center:game.turn_num as range %} {% for _ in range %}
+          <th scope="col">turn {{forloop.counter}}</th>
+          {% endfor %} {% endwith %}
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">Decisions:</th>
+          {% with ''|center:game.turn_num as range %} {% for _ in range %}
+          <td></td>
+          {% endfor %} {% endwith %}
+        </tr>
+        <tr>
+          <td>Machine Purchased</td>
+          {% with ''|center:game.turn_num as range %} {% for _ in range %}
+          <td>{{ record|get_machine_purchased:forloop.counter }}</td>
+          {% endfor %} {% endwith %}
+        </tr>
+        <tr>
+          <td>To Own</td>
+          {% with ''|center:game.turn_num as range %} {% for _ in range %}
+          <td>{{ record|get_to_own:forloop.counter }}</td>
+          {% endfor %} {% endwith %}
+        </tr>
+        <tr>
+          <td>Machine Operated</td>
+          {% with ''|center:game.turn_num as range %} {% for _ in range %}
+          <td>{{ record|get_machine_operated:forloop.counter }}</td>
+          {% endfor %} {% endwith %}
+        </tr>
 
-      {% if game.game_mode != 'simple_production' %}
-      <tr>
-        <td>Extra R&D Purchased</td>
-        {% with ''|center:game.turn_num as range %}
-        {% for _ in range %}
-        <td>{{ record|get_r_d_purchased:forloop.counter }}</td>
-        {% endfor %}
-        {% endwith %}
-      </tr>
-      {% endif %}
+        {% if game.game_mode != 'simple_production' %}
+        <tr>
+          <td>Extra R&D Purchased</td>
+          {% with ''|center:game.turn_num as range %} {% for _ in range %}
+          <td>{{ record|get_r_d_purchased:forloop.counter }}</td>
+          {% endfor %} {% endwith %}
+        </tr>
+        {% endif %}
 
-      <tr>
-        <th scope="row">Bank Balance:</th>
-        {% with ''|center:game.turn_num as range %}
-        {% for _ in range %}
-        <td></td>
-        {% endfor %}
-        {% endwith %}
-      </tr>
-      <tr>
-        <td>Initial</td>
-        {% with ''|center:game.turn_num as range %}
-        {% for _ in range %}
-        <td>{{ record|get_initial:forloop.counter }}</td>
-        {% endfor %}
-        {% endwith %}
-      </tr>
-      <tr>
-        <td>- MP cost</td>
-        {% with ''|center:game.turn_num as range %}
-        {% for _ in range %}
-        <td>{{ record|get_mp_cost:forloop.counter }}</td>
-        {% endfor %}
-        {% endwith %}
-      </tr>
-      <tr>
-        <td>- MO cost</td>
-        {% with ''|center:game.turn_num as range %}
-        {% for _ in range %}
-        <td>{{ record|get_mo_cost:forloop.counter }}</td>
-        {% endfor %}
-        {% endwith %}
-      </tr>
+        <tr>
+          <th scope="row">Bank Balance:</th>
+          {% with ''|center:game.turn_num as range %} {% for _ in range %}
+          <td></td>
+          {% endfor %} {% endwith %}
+        </tr>
+        <tr>
+          <td>Initial</td>
+          {% with ''|center:game.turn_num as range %} {% for _ in range %}
+          <td>{{ record|get_initial:forloop.counter }}</td>
+          {% endfor %} {% endwith %}
+        </tr>
+        <tr>
+          <td>- MP cost</td>
+          {% with ''|center:game.turn_num as range %} {% for _ in range %}
+          <td>{{ record|get_mp_cost:forloop.counter }}</td>
+          {% endfor %} {% endwith %}
+        </tr>
+        <tr>
+          <td>- MO cost</td>
+          {% with ''|center:game.turn_num as range %} {% for _ in range %}
+          <td>{{ record|get_mo_cost:forloop.counter }}</td>
+          {% endfor %} {% endwith %}
+        </tr>
 
-      {% if game.game_mode != 'simple_production' %}
-      <tr>
-        <td>- R&D cost</td>
-        {% with ''|center:game.turn_num as range %}
-        {% for _ in range %}
-        <td>{{ record|get_r_d_cost:forloop.counter }}</td>
-        {% endfor %}
-        {% endwith %}
-      </tr>
-      {% endif %}
+        {% if game.game_mode != 'simple_production' %}
+        <tr>
+          <td>- R&D cost</td>
+          {% with ''|center:game.turn_num as range %} {% for _ in range %}
+          <td>{{ record|get_r_d_cost:forloop.counter }}</td>
+          {% endfor %} {% endwith %}
+        </tr>
+        {% endif %}
 
-      <tr>
-        <td>Before revenues</td>
-        {% with ''|center:game.turn_num as range %}
-        {% for _ in range %}
-        <td>{{ record|get_before_revenue:forloop.counter }}</td>
-        {% endfor %}
-        {% endwith %}
-      </tr>
-      <tr>
-        <td>+ Revenues</td>
-        {% with ''|center:game.turn_num as range %}
-        {% for _ in range %}
-        <td>{{ record|get_revenue:forloop.counter }}</td>
-        {% endfor %}
-        {% endwith %}
-      </tr>
-      <tr>
-        <td>After revenues</td>
-        {% with ''|center:game.turn_num as range %}
-        {% for _ in range %}
-        <td>{{ record|get_bank_balance:forloop.counter }}</td>
-        {% endfor %}
-        {% endwith %}
-      </tr>
-      <tr>
-        <th scope="row">Production:</th>
-        {% with ''|center:game.turn_num as range %}
-        {% for _ in range %}
-        <td></td>
-        {% endfor %}
-        {% endwith %}
-      </tr>
-      <tr>
-        <td>Units produced</td>
-        {% with ''|center:game.turn_num as range %}
-        {% for _ in range %}
-        <td>{{ record|get_unit_produce:forloop.counter }}</td>
-        {% endfor %}
-        {% endwith %}
-      </tr>
-      <tr>
-        <td>Cost per turn</td>
-        {% with ''|center:game.turn_num as range %}
-        {% for _ in range %}
-        <td>{{ record|get_cost_per_turn:forloop.counter }}</td>
-        {% endfor %}
-        {% endwith %}
-      </tr>
-    </tbody>
-  </table>
-</div>
+        <tr>
+          <td>Before revenues</td>
+          {% with ''|center:game.turn_num as range %} {% for _ in range %}
+          <td>{{ record|get_before_revenue:forloop.counter }}</td>
+          {% endfor %} {% endwith %}
+        </tr>
+        <tr>
+          <td>+ Revenues</td>
+          {% with ''|center:game.turn_num as range %} {% for _ in range %}
+          <td>{{ record|get_revenue:forloop.counter }}</td>
+          {% endfor %} {% endwith %}
+        </tr>
+        <tr>
+          <td>After revenues</td>
+          {% with ''|center:game.turn_num as range %} {% for _ in range %}
+          <td>{{ record|get_bank_balance:forloop.counter }}</td>
+          {% endfor %} {% endwith %}
+        </tr>
+        <tr>
+          <th scope="row">Production:</th>
+          {% with ''|center:game.turn_num as range %} {% for _ in range %}
+          <td></td>
+          {% endfor %} {% endwith %}
+        </tr>
+        <tr>
+          <td>Units produced</td>
+          {% with ''|center:game.turn_num as range %} {% for _ in range %}
+          <td>{{ record|get_unit_produce:forloop.counter }}</td>
+          {% endfor %} {% endwith %}
+        </tr>
+        <tr>
+          <td>Cost per turn</td>
+          {% with ''|center:game.turn_num as range %} {% for _ in range %}
+          <td>{{ record|get_cost_per_turn:forloop.counter }}</td>
+          {% endfor %} {% endwith %}
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>

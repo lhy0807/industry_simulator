@@ -2,6 +2,10 @@ from django.db import models
 import datetime
 from django.db.models.constraints import UniqueConstraint
 from random import randint
+from django.apps import apps
+import datetime 
+from django.utils import timezone
+
 # Create your models here.
 '''
 The is the place where the structure of database goes
@@ -36,10 +40,19 @@ class Game(models.Model):
     report_cost = models.IntegerField(default=0)
     demand_curve_viewable = models.BooleanField(default=False)
     rd_distribution_viewable = models.BooleanField(default=False)
-    turn_num = models.IntegerField(default=1)
-    counter_time = models.DateTimeField("Time Submitted", default=datetime.datetime.now())
+
+    #game turn_num starting with 0
+    turn_num = models.IntegerField(default=0)
+    counter_time = models.DateTimeField("Time Submitted", default=timezone.now)
 
     creator = models.ForeignKey('Company', on_delete=models.DO_NOTHING, related_name='+', default=None, null=True, blank=True)
+
+    #return number of companies in this game
+    def company_num(self):
+        Game = apps.get_model('game','Game')
+        Company = apps.get_model('game','Company')
+        game = Game.objects.get(pk=self.game_id)
+        return len(Company.objects.filter(game=game))
 
 class Company(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
@@ -59,6 +72,8 @@ class Company(models.Model):
     revenue = models.IntegerField(default=0)
     unit_produce = models.FloatField(default=0)
     cost_per_turn = models.IntegerField(default=0)
+
+    company_name = models.TextField(default='Untitled')
 
 class Record(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE)

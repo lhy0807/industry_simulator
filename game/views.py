@@ -3,8 +3,10 @@ from django.http import HttpResponse, HttpResponseRedirect
 from random import randint
 from django.urls import reverse
 from .models import *
-import time
+import datetime
 import logging
+import time
+from django.utils import timezone
 
 # Create your views here.
 def index(request, game_id, company_id):
@@ -21,7 +23,7 @@ def index(request, game_id, company_id):
         next
     return render(request, 'game/index.html', {'game':game,'company':company,'record':record,'error':error})
 
-def save_to_record(game, company, turn=1):
+def save_to_record(game, company, turn=0):
     record = Record(game=game, turn=turn, company=company)
     record.machine_purchased = company.machine_purchased
     record.to_own = company.to_own
@@ -99,6 +101,7 @@ def create(request):
                 game.rd_distribution_viewable = True
             else:
                 game.rd_distribution_viewable = False
+            game.counter_time = timezone.now()
             game.save()
 
         company.bank_balance = game.initial_bank_balance
@@ -106,7 +109,8 @@ def create(request):
         company.mo_cost = 5000
         company.save()
 
-        if len(Record.objects.filter(game=game, turn=1, company=company)) == 0:
+        #prevent saving exisiting record
+        if len(Record.objects.filter(game=game, turn=0, company=company)) == 0:
             save_to_record(game=game, company=company)
 
     except(KeyError):
@@ -178,7 +182,8 @@ def update(request, game_id, company_id):
             request.session['error'] = error
             return HttpResponseRedirect(reverse('game:index', args=(game_id,company_id)))
 
-        #update company
+        # after verification mechanism
+        # update company using tmp variables
         company.machine_purchased = mp
         company.to_own += mp
         company.machine_operated = mo
@@ -187,12 +192,8 @@ def update(request, game_id, company_id):
         company.mo_cost = tmp_mo_cost
         company.unit_produce = tmp_unit_produce
         company.cost_per_turn = tmp_cost_per_turn
-
-
-
+        # deduct bank balance
         company.bank_balance -= company.cost_per_turn
-        
-        
         '''
         save data
         '''
@@ -239,9 +240,10 @@ def wait(request, game_id, company_id, turn_num):
     '''
     DEFINE REVERSE DEMAND CURVE HERE
     '''
+    K = game.price_output_equal_player / (game.company_num()**(-1/game.demand_elasticity))
     if Q == 0:
-        Q = 0.01
-    P = 20000 / Q
+        Q = 1
+    P = K * Q**(-1/game.demand_elasticity) * game.price_growth_multiplier**turn_num
 
     #assign revenue for the company
     for record in record_list:
@@ -254,6 +256,9 @@ def wait(request, game_id, company_id, turn_num):
 
             record.company.save()
             record.save()
+
+    #update game turn timer
+    game.counter_time = timezone.now()
 
     #increase game turn by 1
     game.turn_num += 1

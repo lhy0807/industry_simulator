@@ -1,0 +1,50 @@
+{% load app_filters %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-3">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Turn</th>
+            <th scope="col">Bank Balance</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% with ''|center:game.turn_num as range %} {% for _ in range %}
+          <tr>
+            <td>{{forloop.counter}}</td>
+            <td>{{ record|get_bank_balance:forloop.counter }}</td>
+          </tr>
+          {% endfor %} {% endwith %}
+        </tbody>
+      </table>
+    </div>
+    <div class="col-md-7">
+      <div id="report_balance"></div>
+    </div>
+  </div>
+</div>
+<script>
+  {
+    let balance_x = [];
+    let balance_y = [];
+
+    ("{% with ''|center:game.turn_num as range %}");
+    ("{% for _ in range %}");
+    balance_x.push("{{forloop.counter}}");
+    balance_y.push("{{ record|get_bank_balance:forloop.counter }}");
+
+    ("{% endfor %}");
+    ("{% endwith %}");
+
+    let balance_trace1 = {
+      x: balance_x,
+      y: balance_y,
+      type: "scatter"
+    };
+
+    let balance_data = [balance_trace1];
+
+    Plotly.newPlot("report_balance", balance_data);
+  }
+</script>

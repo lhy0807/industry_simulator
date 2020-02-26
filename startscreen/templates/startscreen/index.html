@@ -1,30 +1,24 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
-    <meta name="generator" content="Jekyll v3.8.6">
-    <title>Cover Template · Bootstrap</title>
+<html lang="en">
 
-    <link rel="canonical" href="https://getbootstrap.com/docs/4.4/examples/cover/">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
-    <!-- Bootstrap core CSS -->
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <title>Industry Simulator</title>
+  {% load static %}
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
-    <!-- Favicons -->
-<link rel="apple-touch-icon" href="https://getbootstrap.com/docs/4.4/assets/img/favicons/apple-touch-icon.png" sizes="180x180">
-<link rel="icon" href="https://getbootstrap.com/docs/4.4/assets/img/favicons/favicon-32x32.png" sizes="32x32" type="image/png">
-<link rel="icon" href="https://getbootstrap.com/docs/4.4/assets/img/favicons/favicon-16x16.png" sizes="16x16" type="image/png">
-<link rel="manifest" href="https://getbootstrap.com/docs/4.4/assets/img/favicons/manifest.json">
-<link rel="mask-icon" href="https://getbootstrap.com/docs/4.4/assets/img/favicons/safari-pinned-tab.svg" color="#563d7c">
-<link rel="icon" href="https://getbootstrap.com/docs/4.4/assets/img/favicons/favicon.ico">
-<meta name="msapplication-config" content="/docs/4.4/assets/img/favicons/browserconfig.xml">
-<meta name="theme-color" content="#563d7c">
+  <!-- Favicons -->
+  <link rel="shortcut icon" type="image/png" href="https://rpi.edu/assets2017/images/favicon.png">
 
 
-    <style>
-      .bd-placeholder-img {
+  <style>
+    /* .bd-placeholder-img {
         font-size: 1.125rem;
         text-anchor: middle;
         -webkit-user-select: none;
@@ -37,79 +31,106 @@
         .bd-placeholder-img-lg {
           font-size: 3.5rem;
         }
-      }
-    </style>
-    <!-- Custom styles for this template -->
-    <link href="https://getbootstrap.com/docs/4.4/examples/cover/cover.css" rel="stylesheet">
-    <script>
-    function searchgroup(){
+      } */
+    body {
+      background-image: url("{% static 'cover.jpg' %}");
+      background-repeat: no-repeat;
+      background-size: cover;
+    }
+  </style>
+  <!-- Custom styles for this template -->
+  <link href="https://getbootstrap.com/docs/4.4/examples/cover/cover.css" rel="stylesheet">
+  <script>
+    function searchgroup() {
       var game_id = document.getElementById("game_id").value;
       var company_id = document.getElementById("company_id").value;
-      window.location.href = window.location.href + "join_group" + "/" + game_id + "/" + company_id
+      var company_name = document.getElementById("company_name").value;
+      document.getElementById("search-group").action = window.location.href + "join_group" + "/" + game_id + "/" +
+        company_id;
+      document.getElementById("search-group").submit();
+      // window.location.href = window.location.href + "join_group" + "/" + game_id + "/" + company_id
     }
-    </script>
-  </head>
-  <body class="text-center" data-gr-c-s-loaded="true">
-    <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
-  <header class="masthead mb-auto">
-    <div class="inner">
-      <h3 class="masthead-brand">Cover</h3>
-      <nav class="nav nav-masthead justify-content-center">
-        <a class="nav-link active" href="https://getbootstrap.com/docs/4.4/examples/cover/#">Home</a>
-        <a class="nav-link" href="https://getbootstrap.com/docs/4.4/examples/cover/#">Features</a>
-        <a class="nav-link" href="https://getbootstrap.com/docs/4.4/examples/cover/#">Contact</a>
-      </nav>
-    </div>
-  </header>
+  </script>
+</head>
 
-  <main role="main" class="inner cover">
-    <h1 class="cover-heading">Industry Production Game</h1>
-    <p class="lead">
-      Welcome to the industry dynamics simulator. The simulator helps you understand how common industry dynamics can
-arise, including industry shakeouts of differing degrees and non-shakeout competitive patterns. You can use this simulator on
-your own or as a group.<br>
-    </p>
-    <p class="lead">
-      <a href="{% url 'startscreen:create_robot' %}" class="btn btn-lg btn-secondary">Play Against Computer</a>
-    </p>
-    <p class="lead">
-      <a href="{% url 'startscreen:create_group' game_id company_id %}" class="btn btn-lg btn-secondary">Create Group Game</a>
-    </p>
-    <p class="lead">
-      <button type="button" class="btn btn-lg btn-secondary" data-toggle="modal" data-target="#exampleModalCenter">
-      Join Group Game
-      </button>
-    </p>
+<body class="text-center" data-gr-c-s-loaded="true">
+  <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+    <header class="masthead mb-auto">
+      <div class="inner">
+        <h3 class="masthead-brand">Cover</h3>
+        <nav class="nav nav-masthead justify-content-center">
+          <a class="nav-link active" href="https://getbootstrap.com/docs/4.4/examples/cover/#">Home</a>
+          <a class="nav-link" href="https://getbootstrap.com/docs/4.4/examples/cover/#">Features</a>
+          <a class="nav-link" href="https://getbootstrap.com/docs/4.4/examples/cover/#">Contact</a>
+        </nav>
+      </div>
+    </header>
 
-    <!-- Modal -->
-<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-body">
-        <div class="form-group">
-          <input type="number" class="form-control" id="game_id" name="game_id" placeholder="Enter Group ID">
-          <input id="company_id" value="{{company_id}}" hidden>
+    <main role="main" class="inner cover">
+      <h1 class="cover-heading">Industry Production Game</h1>
+      <p class="lead">
+        Welcome to the industry dynamics simulator. The simulator helps you understand how common industry dynamics can
+        arise, including industry shakeouts of differing degrees and non-shakeout competitive patterns. You can use this
+        simulator on
+        your own or as a group.<br>
+      </p>
+      <p class="lead">
+        <a href="{% url 'startscreen:create_robot' %}" class="btn btn-lg btn-secondary">Play Against Computer</a>
+      </p>
+      <p class="lead">
+        <a href="{% url 'startscreen:create_group' game_id company_id %}" class="btn btn-lg btn-secondary">Create Group
+          Game</a>
+      </p>
+      <p class="lead">
+        <button type="button" class="btn btn-lg btn-secondary" data-toggle="modal" data-target="#exampleModalCenter">
+          Join Group Game
+        </button>
+      </p>
+
+      <!-- Join Group Game Popup Modal -->
+      <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <form id="search-group" method="POST">
+              {% csrf_token %}
+              <div class="modal-body">
+                <div class="form-group">
+                  <input type="number" class="form-control" id="game_id" name="game_id" placeholder="Enter Group ID"
+                    maxlength="5">
+                  <input type="text" class="form-control mt-2" id="company_name" name="company_name"
+                    placeholder="Enter Your Name">
+                  <input id="company_id" value="{{company_id}}" hidden>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="searchgroup()">Search Group</button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" onclick="searchgroup()">Search Group</button>
-      </div>
-    </div>
-  </div>
-</div>
-    
-    
-  </main>
 
-  <footer class="mastfoot mt-auto">
-    <div class="inner">
+
+    </main>
+
+    <footer class="mastfoot mt-auto">
+      <!-- <div class="inner">
       <p>Cover template for <a href="https://getbootstrap.com/">Bootstrap</a>, by <a href="https://twitter.com/mdo">@mdo</a>.</p>
-    </div>
-  </footer>
-</div>
+    </div> -->
+    </footer>
+  </div>
 
-<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-</body></html>
+  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+    integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous">
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous">
+  </script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous">
+  </script>
+</body>
+
+</html>

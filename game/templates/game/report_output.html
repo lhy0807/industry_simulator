@@ -1,52 +1,50 @@
 {% load app_filters %}
 <div class="container">
-    <div class="row">
-        <div class="col-md-3">
-            <table class="table">
-                <thead>
-                  <tr>
-                    <th scope="col">Turn</th>
-                    <th scope="col">Industry Output</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% with ''|center:game.turn_num as range %}
-                  {% for _ in range %}
-                  <tr>
-                    <td>{{forloop.counter}}</td>
-                    <td>{{ record|get_report_output:forloop.counter }}</td>
-                  </tr>
-                  {% endfor %}
-                  {% endwith %}
-                </tbody>
-              </table>
-        </div>
-        <div class="col-md-7"><div id="report_output"></div></div>
-    
+  <div class="row">
+    <div class="col-md-3">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Turn</th>
+            <th scope="col">Industry Output</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% with ''|center:game.turn_num as range %} {% for _ in range %}
+          <tr>
+            <td>{{forloop.counter}}</td>
+            <td>{{ record|get_report_output:forloop.counter }}</td>
+          </tr>
+          {% endfor %} {% endwith %}
+        </tbody>
+      </table>
     </div>
+    <div class="col-md-7">
+      <div id="report_output"></div>
+    </div>
+  </div>
 </div>
 <script>
-  
-  var x = []
-  var y = []
+  {
+    let output_x = [];
+    let output_y = [];
 
-  "{% with ''|center:game.turn_num as range %}"
-  "{% for _ in range %}"
-  x.push("{{forloop.counter}}")
-  y.push("{{ record|get_report_output:forloop.counter }}")
+    ("{% with ''|center:game.turn_num as range %}");
+    ("{% for _ in range %}");
+    output_x.push("{{forloop.counter}}");
+    output_y.push("{{ record|get_report_output:forloop.counter }}");
 
-  "{% endfor %}"
-  "{% endwith %}"
+    ("{% endfor %}");
+    ("{% endwith %}");
 
-  var trace1 = {
-    x: x,
-    y: y,
-    type: 'scatter'
-  };
-  
-  
-  var data = [trace1];
-  
-  Plotly.newPlot('report_output', data);
-  
-  </script>
+    let output_trace1 = {
+      x: output_x,
+      y: output_y,
+      type: "scatter"
+    };
+
+    let output_data = [output_trace1];
+
+    Plotly.newPlot("report_output", output_data);
+  }
+</script>

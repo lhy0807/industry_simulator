@@ -66,6 +66,8 @@ def get_report_output(record, turn):
 
 @register.filter(name='get_report_price')
 def get_report_price(record, turn):
+    if record.get(turn=turn).unit_produce == 0:
+        return 0
     return record.get(turn=turn).revenue / record.get(turn=turn).unit_produce
 
 @register.filter(name='get_demand_func')

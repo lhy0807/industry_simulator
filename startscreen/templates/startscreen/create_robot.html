@@ -1,182 +1,224 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
-    <meta name="generator" content="Jekyll v3.8.6">
-    <title>Cover Template · Bootstrap</title>
 
-    <link rel="canonical" href="https://getbootstrap.com/docs/4.4/examples/cover/">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
-    <!-- Bootstrap core CSS -->
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+  <meta name="generator" content="Jekyll v3.8.6">
+  <title>Cover Template · Bootstrap</title>
+
+  <link rel="canonical" href="https://getbootstrap.com/docs/4.4/examples/cover/">
+  <!-- Favicons -->
+  <link rel="shortcut icon" type="image/png" href="https://rpi.edu/assets2017/images/favicon.png">
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
   <style>
-  html, body {
-    margin: 0;
-    height: 100%;
-}
-</style>
+    html,
+    body {
+      margin: 0;
+      height: 100%;
+    }
+  </style>
 </head>
-<body>
-    <div class="container h-100">
-      <div class="row h-75">
-            <div class="col-md-1"></div>
-            <div class="col-md-10 my-auto">
-                <div class="card " >
-                    <div class="card-body">
-                      <h5 class="card-title text-center">Play Against Computer</h5>
-                      <form action="{% url 'game:create' %}" method="POST">
-                      {% csrf_token %}
-                      <input name="player_or_bot" value="robot" hidden>
-                        <div class="form-group">
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="game_mode" id="game_mode1" value="simple_production" checked>
-                                <label class="form-check-label" for="game_mode1">
-                                Simple production game
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="game_mode" id="game_mode2" value="with_cost_reducing" disabled>
-                                <label class="form-check-label" for="game_mode2">
-                                Production with cost-reducing R&D
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="game_mode" id="game_mode3" value="with_output_expanding" disabled>
-                                <label class="form-check-label" for="game_mode3">
-                                Production with output-expanding R&D
-                                </label>
-                            </div>
-                        </div>
-                     
-                        <div class="accordion" id="accordionExample">
-                            <div class="card">
-                              <div class="card-header" id="headingOne">
-                                <h5 class="mb-0">
-                                  <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                    Advanced Settings
-                                  </button>
-                                </h5>
-                              </div>
-                          
-                              <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
-                                <div class="card-body">
-                                    <ul class="nav nav-tabs" id="myTab" role="tablist">
-                                        <li class="nav-item">
-                                          <a class="nav-link active" id="turns-tab" data-toggle="tab" href="#turns" role="tab" aria-controls="turns" aria-selected="true">Turns</a>
-                                        </li>
-                                        <li class="nav-item">
-                                          <a class="nav-link" id="bank-account-tab" data-toggle="tab" href="#bank-account" role="tab" aria-controls="bank-account" aria-selected="false">Bank Account</a>
-                                        </li>
-                                        <li class="nav-item">
-                                          <a class="nav-link" id="demand-tab" data-toggle="tab" href="#demand" role="tab" aria-controls="demand" aria-selected="false">Demand</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" id="rd-tab" data-toggle="tab" href="#rd" role="tab" aria-controls="rd" aria-selected="false">R&D</a>
-                                          </li>
-                                          <li class="nav-item">
-                                            <a class="nav-link" id="robot-tab" data-toggle="tab" href="#robot" role="tab" aria-controls="robot" aria-selected="false">Robots</a>
-                                          </li>
-                                          <li class="nav-item">
-                                            <a class="nav-link" id="info-tab" data-toggle="tab" href="#info" role="tab" aria-controls="info" aria-selected="false">Information</a>
-                                          </li>
-                                          <li class="nav-item">
-                                            <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Reset Options</a>
-                                          </li>
-                                    </ul>
-                                    <div class="tab-content" id="myTabContent">
-                                        <div class="tab-pane fade show active" id="turns" role="tabpanel" aria-labelledby="turns-tab">
-                                          <div class="form-group">
-                                            <label for="max_turns">Max turns:</label>
-                                            <input type="number" class="form-control" id="max_turns" name="max_turns" placeholder="Game ends then, or if stopped; 20 recommended" value="20">
-                                          </div>
-                                          <div class="form-group">
-                                            <label for="max_seconds_per_turn">Max seconds per turn:</label>
-                                            <input type="number" class="form-control" id="max_seconds_per_turn" name="max_seconds_per_turn" placeholder="turns 1-3 get extra time; 120 recommended", value="120">
-                                          </div>
-                                        </div>
-                                        <div class="tab-pane fade" id="bank-account" role="tabpanel" aria-labelledby="bank-account-tab">
-                                          <div class="form-group">
-                                            <label for="initial_bank_balance">Initial Bank Balance $</label>
-                                            <input type="number" class="form-control" id="initial_bank_balance" name="initial_bank_balance" placeholder="6,000-30,000; 10,000 recommended", value="10000">
-                                          </div>
-                                        </div>
-                                        <div class="tab-pane fade" id="demand" role="tabpanel" aria-labelledby="demand-tab">
-                                          <div class="form-group">
-                                            <label for="price_output_equal_player">Price when industry output equals number of players</label>
-                                            <input type="number" class="form-control" id="price_output_equal_player" name="price_output_equal_player" placeholder="20,000 recommended" value="20000">
-                                          </div>
-                                          <div class="form-group">
-                                            <label for="demand_elasticity">Demand elasticity</label>
-                                            <input type="number" class="form-control" id="demand_elasticity" name="demand_elasticity" placeholder="1.0 recommended; higher for greater profit" value="1.0">
-                                          </div>
-                                          <div class="form-group">
-                                            <label for="price_growth_multiplier">Price growth multiplier</label>
-                                            <input type="number" class="form-control" id="price_growth_multiplier" name="price_growth_multiplier" placeholder="1.0 recommended; 0.8 to 1.2" value="1.0">
-                                          </div>
-                                        </div>
-                                        <div class="tab-pane fade" id="rd" role="tabpanel" aria-labelledby="rd-tab">
-                                          <div class="form-group">
-                                            <label for="max_value">Max value</label>
-                                            <input type="number" class="form-control" id="max_value" name="max_value" placeholder="20 recommended; 1 to 50" value="20">
-                                          </div>
-                                          <div class="form-group">
-                                            <label for="mode">Mode</label>
-                                            <input type="number" class="form-control" id="mode" name="mode" placeholder="5 recommended; must be under 1/2 of max value" value="5">
-                                          </div>
-                                        </div>
-                                        <div class="tab-pane fade" id="robot" role="tabpanel" aria-labelledby="robot-tab">
-                                          <div class="form-group">
-                                            <label for="robot_num">Number of robots</label>
-                                            <input type="number" class="form-control" id="robot_num" name="robot_num" placeholder="5 recommended" value="5">
-                                          </div>
-                                        </div>
-                                        <div class="tab-pane fade" id="info" role="tabpanel" aria-labelledby="info-tab">
-                                          <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="market_report_available" name="market_report_available" checked>
-                                            <label class="form-check-label" for="market_report_available">
-                                              Market report available 
-                                            </label>
-                                          </div>
-                                          <div class="form-group">
-                                            <label for="report_cost">Market report cost</label>
-                                            <input type="number" class="form-control" id="report_cost" name="report_cost" placeholder="0 recommended" value="0">
-                                          </div>
-                                          <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="demand_curve_viewable" name="demand_curve_viewable" checked>
-                                            <label class="form-check-label" for="demand_curve_viewable">
-                                              Demand curve viewable
-                                            </label>
-                                          </div>
-                                          <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="rd_distribution_viewable" name="rd_distribution_viewable" checked>
-                                            <label class="form-check-label" for="rd_distribution_viewable">
-                                              R&D distribution viewable
-                                            </label>
-                                          </div>
-                                    </div>
-                                </div>
-                              </div>
-                            </div>
-                        </div>    
 
-                        <button type="submit" class="btn btn-primary mt-3">Play</button>
-                        {% if has_previous_game %}
-                        <a href="{% url 'game:continue' %}" class="btn btn-success mt-3" role="button" aria-pressed="true">Continue</a>
-                        {% endif %}
-                        <a href="{% url 'index:index' %}" class="btn btn-secondary mt-3 float-right" role="button" aria-pressed="true">Back</a>
-                      </form>
+<body>
+  <div class="container h-100">
+    <div class="row h-75">
+      <div class="col-md-1"></div>
+      <div class="col-md-10 my-auto">
+        <div class="card ">
+          <div class="card-body">
+            <h5 class="card-title text-center">Play Against Computer</h5>
+            <form action="{% url 'game:create' %}" method="POST">
+              {% csrf_token %}
+              <input name="player_or_bot" value="robot" hidden>
+              <div class="form-group">
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="game_mode" id="game_mode1"
+                    value="simple_production" checked>
+                  <label class="form-check-label" for="game_mode1">
+                    Simple production game
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="game_mode" id="game_mode2"
+                    value="with_cost_reducing">
+                  <label class="form-check-label" for="game_mode2">
+                    Production with cost-reducing R&D
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="game_mode" id="game_mode3"
+                    value="with_output_expanding">
+                  <label class="form-check-label" for="game_mode3">
+                    Production with output-expanding R&D
+                  </label>
+                </div>
+              </div>
+
+              <div class="accordion" id="accordionExample">
+                <div class="card">
+                  <div class="card-header" id="headingOne">
+                    <h5 class="mb-0">
+                      <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne"
+                        aria-expanded="true" aria-controls="collapseOne">
+                        Advanced Settings
+                      </button>
+                    </h5>
+                  </div>
+
+                  <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                    <div class="card-body">
+                      <ul class="nav nav-tabs" id="myTab" role="tablist">
+                        <li class="nav-item">
+                          <a class="nav-link active" id="turns-tab" data-toggle="tab" href="#turns" role="tab"
+                            aria-controls="turns" aria-selected="true">Turns</a>
+                        </li>
+                        <li class="nav-item">
+                          <a class="nav-link" id="bank-account-tab" data-toggle="tab" href="#bank-account" role="tab"
+                            aria-controls="bank-account" aria-selected="false">Bank Account</a>
+                        </li>
+                        <li class="nav-item">
+                          <a class="nav-link" id="demand-tab" data-toggle="tab" href="#demand" role="tab"
+                            aria-controls="demand" aria-selected="false">Demand</a>
+                        </li>
+                        <li class="nav-item">
+                          <a class="nav-link" id="rd-tab" data-toggle="tab" href="#rd" role="tab" aria-controls="rd"
+                            aria-selected="false">R&D</a>
+                        </li>
+                        <li class="nav-item">
+                          <a class="nav-link" id="robot-tab" data-toggle="tab" href="#robot" role="tab"
+                            aria-controls="robot" aria-selected="false">Robots</a>
+                        </li>
+                        <li class="nav-item">
+                          <a class="nav-link" id="info-tab" data-toggle="tab" href="#info" role="tab"
+                            aria-controls="info" aria-selected="false">Information</a>
+                        </li>
+                        <li class="nav-item">
+                          <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab"
+                            aria-controls="contact" aria-selected="false">Reset Options</a>
+                        </li>
+                      </ul>
+                      <div class="tab-content" id="myTabContent">
+                        <div class="tab-pane fade show active" id="turns" role="tabpanel" aria-labelledby="turns-tab">
+                          <div class="form-group">
+                            <label for="max_turns">Max turns:</label>
+                            <input type="number" class="form-control" id="max_turns" name="max_turns"
+                              placeholder="Game ends then, or if stopped; 20 recommended" value="20">
+                          </div>
+                          <div class="form-group">
+                            <label for="max_seconds_per_turn">Max seconds per turn:</label>
+                            <input type="number" class="form-control" id="max_seconds_per_turn"
+                              name="max_seconds_per_turn" placeholder="turns 1-3 get extra time; 120 recommended" ,
+                              value="120">
+                          </div>
+                        </div>
+                        <div class="tab-pane fade" id="bank-account" role="tabpanel" aria-labelledby="bank-account-tab">
+                          <div class="form-group">
+                            <label for="initial_bank_balance">Initial Bank Balance $</label>
+                            <input type="number" class="form-control" id="initial_bank_balance"
+                              name="initial_bank_balance" placeholder="6,000-30,000; 10,000 recommended" ,
+                              value="10000">
+                          </div>
+                        </div>
+                        <div class="tab-pane fade" id="demand" role="tabpanel" aria-labelledby="demand-tab">
+                          <div class="form-group">
+                            <label for="price_output_equal_player">Price when industry output equals number of
+                              players</label>
+                            <input type="number" class="form-control" id="price_output_equal_player"
+                              name="price_output_equal_player" placeholder="20,000 recommended" value="20000">
+                          </div>
+                          <div class="form-group">
+                            <label for="demand_elasticity">Demand elasticity</label>
+                            <input type="number" class="form-control" id="demand_elasticity" name="demand_elasticity"
+                              placeholder="1.0 recommended; higher for greater profit" value="1.0">
+                          </div>
+                          <div class="form-group">
+                            <label for="price_growth_multiplier">Price growth multiplier</label>
+                            <input type="number" class="form-control" id="price_growth_multiplier"
+                              name="price_growth_multiplier" placeholder="1.0 recommended; 0.8 to 1.2" value="1.0">
+                          </div>
+                        </div>
+                        <div class="tab-pane fade" id="rd" role="tabpanel" aria-labelledby="rd-tab">
+                          <div class="form-group">
+                            <label for="max_value">Max value</label>
+                            <input type="number" class="form-control" id="max_value" name="max_value"
+                              placeholder="20 recommended; 1 to 50" value="20">
+                          </div>
+                          <div class="form-group">
+                            <label for="mode">Mode</label>
+                            <input type="number" class="form-control" id="mode" name="mode"
+                              placeholder="5 recommended; must be under 1/2 of max value" value="5">
+                          </div>
+                        </div>
+                        <div class="tab-pane fade" id="robot" role="tabpanel" aria-labelledby="robot-tab">
+                          <div class="form-group">
+                            <label for="robot_num">Number of robots</label>
+                            <input type="number" class="form-control" id="robot_num" name="robot_num"
+                              placeholder="5 recommended" value="5">
+                          </div>
+                        </div>
+                        <div class="tab-pane fade" id="info" role="tabpanel" aria-labelledby="info-tab">
+                          <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="market_report_available"
+                              name="market_report_available" checked>
+                            <label class="form-check-label" for="market_report_available">
+                              Market report available
+                            </label>
+                          </div>
+                          <div class="form-group">
+                            <label for="report_cost">Market report cost</label>
+                            <input type="number" class="form-control" id="report_cost" name="report_cost"
+                              placeholder="0 recommended" value="0">
+                          </div>
+                          <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="demand_curve_viewable"
+                              name="demand_curve_viewable" checked>
+                            <label class="form-check-label" for="demand_curve_viewable">
+                              Demand curve viewable
+                            </label>
+                          </div>
+                          <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="rd_distribution_viewable"
+                              name="rd_distribution_viewable" checked>
+                            <label class="form-check-label" for="rd_distribution_viewable">
+                              R&D distribution viewable
+                            </label>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
-            </div>
-          </div>
+                </div>
 
+                <button type="submit" class="btn btn-primary mt-3">Play</button>
+                {% if has_previous_game %}
+                <a href="{% url 'game:continue' %}" class="btn btn-success mt-3" role="button"
+                  aria-pressed="true">Continue</a>
+                {% endif %}
+                <a href="{% url 'index:index' %}" class="btn btn-secondary mt-3 float-right" role="button"
+                  aria-pressed="true">Back</a>
+            </form>
+          </div>
+        </div>
+      </div>
     </div>
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+  </div>
+  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+    integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous">
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous">
+  </script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous">
+  </script>
 </body>
+
 </html>

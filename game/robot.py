@@ -1,17 +1,21 @@
 from .util import *
 import math
+from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponse, HttpResponseRedirect
+from django.urls import reverse
+from django.middleware import csrf
+from .models import *
+import requests
 
 
 class Robot:
-    def __init__(self, id, name, Game, game_id, Company):
+    def __init__(self, id, name, game_id):
         self.id = id
         self.name = name
-        self.Game = Game
         self.game_id = game_id
-        self.game = self.Game.objects.get(pk=self.game_id, player_or_bot='bot')
+        self.game = get_object_or_404(Game, pk=self.game_id)
 
-        self.Company = Company
-        self.company = self.Company(
+        self.company = Company(
             game=self.game, company_id=self.id, company_name=self.name)
 
         self.company.bank_balance = self.game.initial_bank_balance
@@ -25,14 +29,14 @@ class Robot:
 
     def update(self):
         # Updata game and company status
-        self.game = self.Game.objects.get(pk=self.game_id, player_or_bot='bot')
-        self.company = self.Company.objects.get(
+        self.game = get_object_or_404(Game, pk=self.game_id)
+        self.company = Company.objects.get(
             game=self.game, company_id=self.id, company_name=self.name)
 
 
 class DoNothingBot(Robot):
     # This is a dummy bot
-    def make_decision(self):
+    def make_decision(self, url):
         # update status
         super().update()
 
@@ -51,8 +55,8 @@ class DoNothingBot(Robot):
         self.company.cost_per_turn = 0
 
         self.company.save()
-        save_to_record(game=self.game, company=self.company, turn=self.game.turn_num +
-                       1)
+        save_to_record(game=self.game, company=self.company,
+                       turn=self.game.turn_num+1)
 
 
 class BuyerBot(Robot):
@@ -61,7 +65,7 @@ class BuyerBot(Robot):
     ONLY BUY MACHINE AS MANY AS POSSIBLE
     '''
 
-    def make_decision(self):
+    def make_decision(self, url):
         # update status
         super().update()
 
@@ -82,8 +86,8 @@ class BuyerBot(Robot):
         self.company.cost_per_turn = mp * self.company.mp_cost
 
         self.company.save()
-        save_to_record(game=self.game, company=self.company, turn=self.game.turn_num +
-                       1)
+        save_to_record(game=self.game, company=self.company,
+                       turn=self.game.turn_num+1)
 
 
 class SmarterBot(Robot):
@@ -93,7 +97,7 @@ class SmarterBot(Robot):
     Then maximize machine purchased (Half)
     '''
 
-    def make_decision(self):
+    def make_decision(self, request):
         # update status
         super().update()
 
@@ -111,6 +115,9 @@ class SmarterBot(Robot):
 
         mp = math.floor(remaining / self.company.mp_cost) / 2
 
+        mo = int(mo)
+        mp = int(mp)
+
         self.company.machine_purchased = mp
         self.company.to_own += mp
         self.company.machine_operated = mo
@@ -126,5 +133,5 @@ class SmarterBot(Robot):
         self.company.cost_per_turn = mp * self.company.mp_cost + mo * self.company.mo_cost
 
         self.company.save()
-        save_to_record(game=self.game, company=self.company, turn=self.game.turn_num +
-                       1)
+        save_to_record(game=self.game, company=self.company,
+                       turn=self.game.turn_num+1)

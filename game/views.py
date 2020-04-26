@@ -18,9 +18,9 @@ class AgentList:
     def add(self, agent):
         self.list.append(agent)
 
-    def make_decision(self):
+    def make_decision(self, request):
         for i in range(len(self.list)):
-            self.list[i].make_decision()
+            self.list[i].make_decision(request)
 
 
 # Instantiate an agent list
@@ -120,16 +120,15 @@ def create(request):
             '''
             global agents
             agents.add(DoNothingBot(
-                id=1000000001, name='DoNothingBot', Game=Game, game_id=game_id, Company=Company))
+                id=1000000001, name='DoNothingBot', game_id=game_id))
             agents.add(BuyerBot(
-                id=1000000002, name='BuyerBot', Game=Game, game_id=game_id, Company=Company))
+                id=1000000002, name='BuyerBot', game_id=game_id))
             agents.add(SmarterBot(
-                id=1000000003, name='SmarterBot', Game=Game, game_id=game_id, Company=Company))
+                id=1000000003, name='SmarterBot1', game_id=game_id))
             agents.add(SmarterBot(
-                id=1000000004, name='SmarterBot', Game=Game, game_id=game_id, Company=Company))
+                id=1000000004, name='SmarterBot2',  game_id=game_id))
             agents.add(SmarterBot(
-                id=1000000005, name='SmarterBot', Game=Game, game_id=game_id, Company=Company))
-
+                id=1000000005, name='SmarterBot3',  game_id=game_id))
     except(KeyError):
         return HttpResponse("POST Error")
 
@@ -159,13 +158,14 @@ def update(request, game_id, company_id):
         - 'output_expand'
         '''
         game_mode = game.game_mode
-
         mp = int(request.POST['mp'])
         mo = int(request.POST['mo'])
+
         tmp_mo_cost = company.mo_cost
         tmp_mp_cost = company.mp_cost
         tmp_r_d_cost = company.r_d_cost
         tmp_r_d_purchased = company.r_d_purchased
+        tmp_unit_produce = 0
 
         # calculate R&D
         if game_mode != 'simple_production':
@@ -178,10 +178,10 @@ def update(request, game_id, company_id):
             # TODO: improve cost reduction method
             tmp_mo_cost = tmp_mo_cost * (1-0.04)**tmp_r_d_purchased
 
-        #game_mode == 'simple_production' or 'cost_reduce'
+        # game_mode == 'simple_production' or 'cost_reduce'
         if game_mode == 'simple_production' or game_mode == 'cost_reduce':
             tmp_unit_produce = mo
-        #game_mode == 'output_expand'
+        # game_mode == 'output_expand'
         # increase produced unit if in output_expand mode
         elif game_mode == 'output_expand':
             tmp_unit_produce = mo * (1+0.04)**tmp_r_d_purchased
@@ -222,7 +222,7 @@ def update(request, game_id, company_id):
         '''
         Robot Agents take actions after human player
         '''
-        agents.make_decision()
+        agents.make_decision(request)
     except(KeyError):
         return HttpResponse("POST Error")
 
@@ -273,7 +273,12 @@ def wait(request, game_id, company_id, turn_num):
 
     # assign revenue for the company
     for record in record_list:
-        if record.company.company_id == company_id:
+        if game.game_mode == 'bot' or record.company.company_id == company_id:
+            '''
+            In bot mode, only one wait being processed
+            In player mode, multiple wait being processed,
+            thus need to update record for each player respectively
+            '''
             record.revenue = record.unit_produce * P
             record.company.revenue = record.unit_produce * P
 
